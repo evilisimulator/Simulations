@@ -1,0 +1,82 @@
+my-cigarette-simulation/
+├── index.html
+├── style.css
+├── script.js
+├── cigarette.png
+└── assets/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCigarette Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas" width="400" height="800"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#canvas {
+    border: 2px solid white;
+}
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let burningLength = 600;
+let isSmoking = false;
+let smokeInterval;
+
+const cigaretteImg = new Image();
+cigaretteImg.src = 'cigarette.png'; // Ensure this path is correct based on your file structure
+
+cigaretteImg.onload = function() {
+    drawCigarette();
+};
+
+function drawCigarette() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(cigaretteImg, 50, burningLength, 300, 200);
+    drawSmoke();
+}
+
+function drawSmoke() {
+    if (isSmoking) {
+        ctx.beginPath();
+        ctx.arc(200, burningLength - 50, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.fill();
+    }
+}
+
+function burnCigarette() {
+    if (burningLength > 50) {
+        burningLength -= 5;
+        drawCigarette();
+    } else {
+        clearInterval(smokeInterval);
+        alert("Cigarette is finished!");
+    }
+}
+
+canvas.addEventListener('mousedown', () => {
+    isSmoking = true;
+    smokeInterval = setInterval(burnCigarette, 100);
+});
+
+canvas.addEventListener('mouseup', () => {
+    isSmoking = false;
+    clearInterval(smokeInterval);
+    drawCigarette();
+});
